@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Location } from "@/components/location";
 import { ContactForm } from "@/components/contact-form";
@@ -10,6 +10,133 @@ import { WhatsAppFloat } from "@/components/whatsapp-float";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/cart-context";
 import { Phone, Mail, MapPin } from "lucide-react";
+import { toast } from "sonner";
+
+// Componente funcional del formulario
+function ContactFormFunctional() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("https://formsubmit.co/Info@portonespm.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          _subject: `Nuevo contacto desde PORTONES PM - ${formData.subject}`,
+          _template: "table",
+          _captcha: "false",
+        }),
+      });
+
+      if (response.ok) {
+        toast.success("Mensaje enviado correctamente", {
+          description: "Te contactaremos a la brevedad. ¡Gracias por tu consulta!",
+        });
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      } else {
+        throw new Error("Error al enviar el mensaje");
+      }
+    } catch (error) {
+      toast.error("Error al enviar el mensaje", {
+        description: "Por favor intenta nuevamente o contáctanos por teléfono.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="bg-white dark:bg-gray-900 border border-border rounded-lg p-6 flex flex-col">
+      <form onSubmit={handleSubmit} className="space-y-4 flex-grow">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Nombre *
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => handleInputChange("name", e.target.value)}
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
+              placeholder="Tu nombre completo"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Email *
+            </label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
+              placeholder="tu@email.com"
+              required
+            />
+          </div>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2">
+            Asunto *
+          </label>
+          <input
+            type="text"
+            value={formData.subject}
+            onChange={(e) => handleInputChange("subject", e.target.value)}
+            className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
+            placeholder="¿En qué podemos ayudarte?"
+            required
+          />
+        </div>
+        
+        <div className="flex-grow">
+          <label className="block text-sm font-medium text-foreground mb-2">
+            Mensaje *
+          </label>
+          <textarea
+            rows={5}
+            value={formData.message}
+            onChange={(e) => handleInputChange("message", e.target.value)}
+            className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent resize-none h-full min-h-[120px]"
+            placeholder="Describe tu consulta o proyecto..."
+            required
+          />
+        </div>
+        
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-accent text-white py-3 px-4 rounded-md hover:bg-accent/90 transition-colors font-medium mt-4 disabled:opacity-50"
+        >
+          {isSubmitting ? "Enviando..." : "Enviar mensaje"}
+        </button>
+      </form>
+    </div>
+  );
+}
 
 export function ContactoClient() {
   const { itemCount } = useCart();
@@ -69,7 +196,7 @@ export function ContactoClient() {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Dirección</h3>
                     <p className="text-muted-foreground">
-                      Av Diagonal Norte 1079, Ruta 25 - Moreno (La Reja)
+                      Av. 25 de Mayo 416 (Entre Hipólito Irigoyen y Av. Belgrano)
                     </p>
                   </div>
                 </div>
@@ -79,7 +206,7 @@ export function ContactoClient() {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Teléfono</h3>
                     <p className="text-muted-foreground">
-                      +54 9 11 6321-4356
+                      Fijo: 0348-4432218 | Cel: 011-65145507
                     </p>
                   </div>
                 </div>
@@ -89,7 +216,7 @@ export function ContactoClient() {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Email</h3>
                     <p className="text-muted-foreground">
-                      info@pmportones.com
+                      Info@portonespm.com
                     </p>
                   </div>
                 </div>
@@ -100,11 +227,11 @@ export function ContactoClient() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Lunes - Viernes</span>
-                    <span className="text-foreground">8:00 AM - 6:00 PM</span>
+                    <span className="text-foreground">8:30 - 12:30 y 14:00 - 17:30</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Sábados</span>
-                    <span className="text-foreground">8:00 AM - 1:00 PM</span>
+                    <span className="text-foreground">Cerrado</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Domingos</span>
@@ -114,59 +241,8 @@ export function ContactoClient() {
               </div>
             </div>
 
-            {/* Columna derecha - Formulario */}
-            <div className="bg-white dark:bg-gray-900 border border-border rounded-lg p-6 flex flex-col">
-              <div className="space-y-4 flex-grow">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Nombre
-                    </label>
-                    <input 
-                      type="text" 
-                      className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
-                      placeholder="Tu nombre completo"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Email
-                    </label>
-                    <input 
-                      type="email" 
-                      className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
-                      placeholder="tu@email.com"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Asunto
-                  </label>
-                  <input 
-                    type="text" 
-                    className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent"
-                    placeholder="¿En qué podemos ayudarte?"
-                  />
-                </div>
-                
-                <div className="flex-grow">
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Mensaje
-                  </label>
-                  <textarea 
-                    rows={5}
-                    className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent resize-none h-full min-h-[120px]"
-                    placeholder="Describe tu consulta o proyecto..."
-                  />
-                </div>
-              </div>
-              
-              <button className="w-full bg-accent text-white py-3 px-4 rounded-md hover:bg-accent/90 transition-colors font-medium mt-4">
-                Enviar mensaje
-              </button>
-            </div>
+            {/* Columna derecha - Formulario Funcional */}
+            <ContactFormFunctional />
 
           </div>
         </div>

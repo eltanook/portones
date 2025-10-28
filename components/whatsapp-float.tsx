@@ -5,7 +5,7 @@ import { FaWhatsapp } from "react-icons/fa";
 
 export function WhatsAppFloat() {
   const handleWhatsAppClick = () => {
-    const phoneNumber = "5491165145507";
+    const phoneNumber = "5401165145507";
     const message =
       "¡Hola! Me interesa conocer más sobre sus productos de automatización de portones.";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(

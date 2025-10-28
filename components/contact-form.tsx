@@ -52,25 +52,25 @@ export function ContactForm() {
     {
       icon: Phone,
       label: "Teléfono",
-      value: "(11) 6514-5507",
-      href: "tel:1165145507",
+      value: "Fijo: 0348-4432218\nCel: 011-65145507",
+      href: "tel:03484432218",
     },
     {
       icon: Mail,
       label: "Email",
-      value: "caznidarsic@yahoo.com.ar",
-      href: "mailto:caznidarsic@yahoo.com.ar",
+      value: "Info@portonespm.com",
+      href: "mailto:Info@portonespm.com",
     },
     {
       icon: MapPin,
       label: "Ubicación",
-      value: "Buenos Aires, Argentina",
+      value: "Av. 25 de Mayo 416\n(Entre Hipólito Irigoyen y Av. Belgrano)",
       href: "#",
     },
     {
       icon: Clock,
       label: "Horarios de Atención",
-      value: "Lun - Vie: 8:00 - 18:00\nSáb: 8:00 - 13:00",
+      value: "Lun - Vie: 8:30 - 12:30 y 14:00 - 17:30\nSáb - Dom: Cerrado",
       href: "#",
     },
   ];
@@ -100,7 +100,7 @@ export function ContactForm() {
 
     try {
       const response = await fetch(
-        "https://formsubmit.co/caznidarsic@yahoo.com.ar",
+        "https://formsubmit.co/Info@portonespm.com",
         {
           method: "POST",
           headers: {
@@ -351,10 +351,10 @@ export function ContactForm() {
                       Soporte Técnico
                     </h4>
                     <p className="text-xs text-muted-foreground">
-                      Lun - Vie 9:00-18:00
+                      Lun - Vie 8:30-12:30 y 14:00-17:30
                     </p>
                     <a
-                      href="tel:1165145507"
+                      href="tel:03484432218"
                       className="text-accent text-sm font-medium hover:underline"
                     >
                       Llamar Ahora
